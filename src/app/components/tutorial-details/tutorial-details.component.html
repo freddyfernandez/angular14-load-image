@@ -1,13 +1,13 @@
 <div *ngIf="viewMode; else editable">
-  <div *ngIf="currentTutorial.codigo">
+  <div *ngIf="currentProducto.codigo">
     
     <h4>Producto</h4>
     <div>
-      <label><strong>Codigo:</strong></label> {{ currentTutorial.codigo }}
+      <label><strong>Codigo:</strong></label> {{ currentProducto.codigo }}
     </div>
     <div>
       <label><strong>Nombre:</strong></label>
-      {{ currentTutorial.nombre }}
+      {{ currentProducto.nombre }}
     </div>
     <div>
       <label><strong>imagen Anverso:</strong></label>
@@ -19,63 +19,77 @@
     </div>
     <div>
       <label><strong>Status:</strong></label>
-      {{ currentTutorial.published ? "Published" : "Pending" }}
+      {{ currentProducto.published ? "Published" : "Pending" }}
     </div>
 
     <a
       class="badge badge-warning"
-      routerLink="/tutorials/{{ currentTutorial.codigo }}"
-    >
+      routerLink="/productos/{{ currentProducto.codigo }}">
       Edit
     </a>
   </div>
 
-  <div *ngIf="!currentTutorial">
+  <div *ngIf="!currentProducto">
     <br />
     <p>Please click on a Tutorial...</p>
   </div>
 </div>
 
 <ng-template #editable>
-  <div *ngIf="currentTutorial.codigo" class="edit-form">
-    <h4>Tutorial</h4>
+  <div *ngIf="currentProducto.codigo" class="edit-form">
+    <h4>Edicion de Producto</h4>
     <form>
       <div class="form-group">
-        <label for="title">Codigo</label>
+        <img [src]="previewAnverso" *ngIf="previewReverso">
+        <label for="file">Choose FileAnverso</label>
+        <input type="file"
+               id="file"
+               (change)="handleFileInputA($event)">
+      </div>
+      <div class="form-group">
+        <div><img [src]="previewReverso" *ngIf="previewReverso"></div>
+        <label for="file">Choose FileReverso</label>
+        <input type="file"
+               id="file"
+               (change)="handleFileInputB($event)">
+      </div>
+      <div class="form-group">
+        <label for="codigo">Codigo</label>
         <input
           type="text"
           class="form-control"
-          id="title"
-          [(ngModel)]="currentTutorial.codigo"
-          name="title"
+          id="codigo"
+          [(ngModel)]="currentProducto.codigo"
+          name="codigo"
         />
       </div>
       <div class="form-group">
-        <label for="description">nombre</label>
+        <label for="nombre">nombre</label>
         <input
           type="text"
           class="form-control"
-          id="description"
-          [(ngModel)]="currentTutorial.nombre"
-          name="description"
+          id="nombre"
+          name="nombre"
+          value="{{ currentProducto.nombre }}"
         />
+        
       </div>
 
       <div class="form-group">
         <label><strong>Status:</strong></label>
-        {{ currentTutorial.published ? "Published" : "Pending" }}
+        {{ currentProducto.published ? "Published" : "Pending" }}
       </div>
     </form>
 
     <button
       class="badge badge-primary mr-2"
-      *ngIf="currentTutorial.published"
+      *ngIf="currentProducto.published"
       (click)="updatePublished(false)"
     >
       UnPublish
     </button>
     <button
-      *ngIf="!currentTutorial.published"
+      *ngIf="!currentProducto.published"
       class="badge badge-primary mr-2"
       (click)="updatePublished(true)"
     >
@@ -96,7 +110,7 @@
     <p>{{ message }}</p>
   </div>
 
-  <div *ngIf="!currentTutorial.codigo">
+  <div *ngIf="!currentProducto.codigo">
     <br />
     <p>Cannot access this Tutorial...</p>
   </div>

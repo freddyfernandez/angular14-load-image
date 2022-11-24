@@ -5,7 +5,7 @@
         type="text"
         class="form-control"
         placeholder="Search by title"
-        [(ngModel)]="title"
+        [(ngModel)]="codigo"
       />
       <div class="input-group-append">
         <button
@@ -22,11 +22,11 @@
     <ul class="list-group">
       <li
         class="list-group-item"
-        *ngFor="let tutorial of tutorials; let i = index"
+        *ngFor="let producto of productos; let i = index"
         [class.active]="i == currentIndex"
-        (click)="setActiveTutorial(tutorial, i)">
-        {{ tutorial.codigo }}
-        {{ tutorial.nombre }}
+        (click)="setActiveTutorial(producto, i)">
+        {{ producto.codigo }}
+        {{ producto.nombre }}
       </li>
     </ul>
     <button class="m-3 btn btn-sm btn-danger" (click)="removeAllTutorials()">
@@ -36,7 +36,8 @@
   <div class="col-md-6">
     <app-tutorial-details
       [viewMode]="true"
-      [currentTutorial]="currentTutorial"
+      [currentProducto]="currentProducto"
+      [currentProductoFile]="currentProductoFile"
       [previewAnverso]="previewAnverso"
       [previewReverso]="previewReverso"
     ></app-tutorial-details>

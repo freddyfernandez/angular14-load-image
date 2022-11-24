@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Producto } from 'src/app/models/producto.model';
+import { ProductoFile } from 'src/app/models/productofile.model';
 import { TutorialService } from 'src/app/services/tutorial.service';
 
 @Component({
@@ -10,14 +11,14 @@ import { TutorialService } from 'src/app/services/tutorial.service';
 })
 export class TutorialsListComponent implements OnInit {
 
-  tutorials?: Producto[];
-  currentTutorial: Producto = {};
+  productos?: Producto[];
+  currentProducto: Producto = {};
+  currentProductoFile: ProductoFile = {};
   currentIndex = -1;
-  title = '';
-  previewAnverso: any;
-  previewReverso: any;
+  codigo = '';
+  previewAnverso:any;
+  previewReverso:any;
   sanitizer: DomSanitizer
-
   constructor(private tutorialService: TutorialService,sanitizerInit: DomSanitizer) { 
     this.sanitizer=sanitizerInit;
   }
@@ -30,7 +31,7 @@ export class TutorialsListComponent implements OnInit {
     this.tutorialService.getAll()
       .subscribe({
         next: (data) => {
-          this.tutorials = data;
+          this.productos = data;
           console.log(data);
         },
         error: (e) => console.error(e)
@@ -39,20 +40,14 @@ export class TutorialsListComponent implements OnInit {
 
   refreshList(): void {
     this.retrieveTutorials();
-    this.currentTutorial = {};
+    this.currentProducto = {};
     this.currentIndex = -1;
   }
 
-  setActiveTutorial(tutorial: Producto, index: number): void {
-    this.currentTutorial = tutorial; 
+  setActiveTutorial(producto: Producto, index: number): void {
+    this.currentProducto = producto; 
     this.currentIndex = index;
-
-    let objectURL1 = 'data:image/jpeg;base64,' + this.currentTutorial.imgAnverso;
-    let objectURL2 = 'data:image/jpeg;base64,' + this.currentTutorial.imgReverso;
-    this.previewAnverso = this.sanitizer.bypassSecurityTrustUrl(objectURL1);
-    this.previewReverso = this.sanitizer.bypassSecurityTrustUrl(objectURL2);
-
-    
+    this.getTutorial(this.currentProducto.codigo);
     /*this.preview = '';
     const reader = new FileReader();
 
@@ -77,14 +72,29 @@ export class TutorialsListComponent implements OnInit {
   }
 
   searchTitle(): void {
-    this.currentTutorial = {};
+    this.currentProducto = {};
     this.currentIndex = -1;
 
-    this.tutorialService.findByTitle(this.title)
+    this.tutorialService.findByTitle(this.codigo)
       .subscribe({
         next: (data) => {
-          this.tutorials = data;
+          this.productos = data;
           console.log(data);
+        },
+        error: (e) => console.error(e)
+      });
+  }
+
+  getTutorial(id: any): void {
+    this.tutorialService.get(id)
+      .subscribe({
+        next: (data) => {
+          this.currentProductoFile = data;
+          console.log(data);
+          let objectURL1 = 'data:image/jpeg;base64,' + (this.currentProductoFile.imgAnverso);
+          let objectURL2 = 'data:image/jpeg;base64,' + (this.currentProductoFile.imgReverso);
+          this.previewAnverso = this.sanitizer.bypassSecurityTrustUrl(objectURL1);
+          this.previewReverso = this.sanitizer.bypassSecurityTrustUrl(objectURL2);
         },
         error: (e) => console.error(e)
       });
